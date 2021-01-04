@@ -34,9 +34,11 @@ This requires the ROOT file generated from `DRsim`. Assuming the name of the fil
 
 ### generation macros
 generate box/ele_0.root with GEANT4 simulation
+
     source rungun.sh run_ele $(Process) box/ele
 
 generate with condor jobs
+
     condor_submit runel.co
 
 ### Analysis
@@ -44,11 +46,11 @@ This requires the ROOT file generated from `Reco`. Assuming the name of the file
 
     ./<your_analysis_program> <filenumber> <filename>
 
-Merge files from condor jobs with name box/ele_#.root,# from 0 to 49.
+Merge files from condor jobs with name `box/ele_#.root`,# from 0 to 49.
 to eltestdrsim.root, eltestreco.root
     ./merge ../box/ele_%.root 50 ../eltest
 
-Process image with eltestdrsim.root and eltestreco.root to eltest.root
+Process image with `eltestdrsim.root` and `eltestreco.root` to `eltest.root`
     ./process ../eltest ../eltest.root 0
 
 ### Precaution
