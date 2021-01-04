@@ -20,6 +20,7 @@ Copy excutable file in bin to each directory.
 In build/DRsim,
 
     ./DRsim <run_macro> <filenumber> <filename>
+    ./DRsim run_ele.mac 0 eltest
 
 generates, `<filename>_<filenumber>.root`
 
