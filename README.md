@@ -12,6 +12,7 @@ After fetching the repository, do
     make -j4
 
 Copy excutable file in bin to each directory.
+
     cp bin/DRsim DRsim/
 
 ### Running GEANT4
