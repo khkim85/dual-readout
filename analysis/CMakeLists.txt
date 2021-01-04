@@ -17,11 +17,34 @@ file(GLOB headers
 
 include(${ROOT_USE_FILE})
 add_executable(analysis analysis.cc ${sources} ${headers})
+add_executable(merge merge.cc ${sources} ${headers})
+add_executable(process process.cc ${sources} ${headers})
 #add_executable(JER JER.cc ${sources} ${headers})
 #add_executable(calib calib.cc ${sources} ${headers})
 target_link_libraries(
   analysis
   ${HEPMC3_LIBRARIES}
+  rootIO
+  ${ROOT_LIBRARIES}
+  ${CMAKE_DL_LIBS}
+  DetComponents
+  ddDRsegmentation
+)
+target_link_libraries(
+  merge
+  ${HEPMC_DIR}/lib64/libHepMC3.so
+  ${HEPMC_DIR}/lib64/libHepMC3rootIO.so
+  rootIO
+  ${ROOT_LIBRARIES}
+  ${CMAKE_DL_LIBS}
+  DetComponents
+  ddDRsegmentation
+  stdc++fs
+)
+target_link_libraries( 
+  process 
+  ${HEPMC_DIR}/lib64/libHepMC3.so 
+  ${HEPMC_DIR}/lib64/libHepMC3rootIO.so 
   rootIO
   ${ROOT_LIBRARIES}
   ${CMAKE_DL_LIBS}
@@ -57,4 +80,4 @@ foreach(_script ${analysis_SCRIPTS})
   )
 endforeach()
 
-install(TARGETS analysis DESTINATION bin) # JER calib
+install(TARGETS analysis merge process DESTINATION bin) # JER calib

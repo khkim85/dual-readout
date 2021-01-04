@@ -8,26 +8,11 @@ After fetching the repository, do
     source setenv-cc7-gcc8.sh
     mkdir build
     cd build
-    cmake ..
+    cmake3 ..
     make -j4
 
-### Install
-For a case that needs to install the package (e.g. `condor` requires file transfer), one can install the package via
-
-    cmake -DCMAKE_INSTALL_PREFIX=<path_to_install_directory> ..
-    make -j4
-    make install
-    
-Note that to use the installed binary & library files, need to do following (assuming `$PWD=<path_to_install_directory>`)
-
-    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HEPMC_DIR/lib64:$FASTJET_DIR/lib:$PYTHIA_DIR/lib:$PWD/lib
-
-### Running Pythia8
-In build/Gen,
-
-    ./P8ptcgun ptcgun.cmnd <seed> <filename>
-
-generates `<filename>_<seed>.root`.
+Copy excutable file in bin to each directory.
+    cp bin/DRsim DRsim/
 
 ### Running GEANT4
 #### 1. GEANT4 standalone particle gun
@@ -47,10 +32,25 @@ This requires the ROOT file generated from `DRsim`. Assuming the name of the fil
 
     ./Reco <filenumber> <filename>
 
+### generation macros
+generate box/ele_0.root with GEANT4 simulation
+    source rungun.sh run_ele $(Process) box/ele
+
+generate with condor jobs
+    condor_submit runel.co
+
 ### Analysis
 This requires the ROOT file generated from `Reco`. Assuming the name of the file `<filename>_<filenumber>.root`, in build/analysis,
 
     ./<your_analysis_program> <filenumber> <filename>
 
+Merge files from condor jobs with name box/ele_#.root,# from 0 to 49.
+to eltestdrsim.root, eltestreco.root
+    ./merge ../box/ele_%.root 50 ../eltest
+
+Process image with eltestdrsim.root and eltestreco.root to eltest.root
+    ./process ../eltest ../eltest.root 0
+
 ### Precaution
 Since GEANT4 takes very large amount of time per an event, P8ptcgun, DRsim and Reco are assumed to run a few events only per ROOT file. The executables can be run on parallel using `torque` or `condor`, and can be merged before analysis step using `hadd` from ROOT.
+
