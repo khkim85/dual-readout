@@ -57,6 +57,22 @@ Process image with `eltestdrsim.root` and `eltestreco.root` to `eltest.root`
 
     ./process ../eltest ../eltest.root 0
 
+eltest.root have "event" tree contains processed data by each event.
+
+for python contents can be inspected by accessing tree
+
+    import ROOT
+    import numpy as np
+    
+    infile=ROOT.TFile("eltest.root","read")
+    event=infile.Get("event")
+    event.Print()
+    
+    event.GetEntry(0)
+    print(event.E_DRcorr,np.array(image_ecore_s).shape,np.array(fiber_ecor_s).shape))
+    
+images have 168 * 168 shape, but imaging algorithm is still in progress.
+
 ### Precaution
 Since GEANT4 takes very large amount of time per an event, P8ptcgun, DRsim and Reco are assumed to run a few events only per ROOT file. The executables can be run on parallel using `torque` or `condor`, and can be merged before analysis step using `hadd` from ROOT.
 
