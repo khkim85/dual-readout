@@ -8,7 +8,7 @@ After fetching the repository, do
     source setenv-cc7-gcc8.sh
     mkdir build
     cd build
-    cmake3 ..
+    cmake3 .
     make -j4
 
 Copy excutable file in bin to each directory.
@@ -28,6 +28,8 @@ generates, `<filename>_<filenumber>.root`
 This requires the ROOT file generated from `Gen`. Assuming the name of the file `<filename>_<filenumber>.root`,
 
     ./DRsim run_hepmc.mac <filenumber> <filename>
+    
+I you mind `lib/librootIO_rdict.pcm file does not exist`, copy `rootIO/librootIO_rdict.pcm` to `lib`
 
 ### Reconstruction
 This requires the ROOT file generated from `DRsim`. Assuming the name of the file `<filename>_<filenumber>.root`, in build/Reco,
