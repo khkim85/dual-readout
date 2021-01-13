@@ -8,7 +8,7 @@ After fetching the repository, do
     source setenv-cc7-gcc8.sh
     mkdir build
     cd build
-    cmake3 ..
+    cmake3 .
     make -j4
 
 Copy excutable file in bin to each directory.
