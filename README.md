@@ -70,7 +70,7 @@ This requires the ROOT file generated from `Reco`. Assuming the name of the file
 Merge files from condor jobs with name `box/ele_#.root`,# from 0 to 9.
 to eltestdrsim.root, eltestreco.root
 
-    ./merge ../box/ele_%.root 50 ../eltest
+    ./merge ../box/ele_%.root 10 ../eltest
 
 Process image with `eltestdrsim.root` and `eltestreco.root` to `eltest.root`
 
