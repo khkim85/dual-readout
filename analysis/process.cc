@@ -620,7 +620,7 @@ TFile outfile(outname.Data(), "recreate");
                 if(etamax>eta && etamin<=eta){
                 
                 for(buf_index=0;buf_index<num_phicut-1;buf_index++){
-                  if(28>int(segmentation->y(fiber.fiberNum))){
+                  if(28>int(segmentation->x(fiber.fiberNum))){
                     if(phi<(phicut[buf_index]+phicut[buf_index+1])/2.){
                       phiindex=Int_t(buf_index*2);
                     }
