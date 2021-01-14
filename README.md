@@ -6,51 +6,68 @@ Repository for GEANT4 simulation &amp; analysis of the dual-readout calorimeter.
 After fetching the repository, do
 
     source setenv-cc7-gcc8.sh
-    mkdir build
-    cd build
     cmake3 .
     make -j4
 
-Copy excutable file in bin to each directory.
+There are compiled executables in bin/
+Copy executable file in bin to each directory.
 
     cp bin/DRsim DRsim/
+    cp bin/Reco Reco/
+    cp bin/mergy analysis/
+    cp bin/process analysis/
+    
+When you change code `make` again and update executable from `/bin` directory.
 
 ### Running GEANT4
 #### 1. GEANT4 standalone particle gun
-In build/DRsim,
+In DRsim,
 
-    ./DRsim <run_macro> <filenumber> <filename>
-    ./DRsim run_ele.mac 0 eltest
+    #./DRsim <run_macro> <filenumber> <filename>
+    ./DRsim run_ele.mac 0 ../eltest
 
 generates, `<filename>_<filenumber>.root`
+I you mind `lib/librootIO_rdict.pcm file does not exist`, copy `rootIO/librootIO_rdict.pcm` to `lib`
 
-#### 2. Using HepMC input
+#### 1.1 Using HepMC input (need to run Gen first)
 This requires the ROOT file generated from `Gen`. Assuming the name of the file `<filename>_<filenumber>.root`,
 
-    ./DRsim run_hepmc.mac <filenumber> <filename>
-    
-I you mind `lib/librootIO_rdict.pcm file does not exist`, copy `rootIO/librootIO_rdict.pcm` to `lib`
+    #./DRsim run_hepmc.mac <filenumber> <filename>  
+
+Modify `#.mac` for other paticles or conditions
 
 ### Reconstruction
 This requires the ROOT file generated from `DRsim`. Assuming the name of the file `<filename>_<filenumber>.root`, in build/Reco,
 
-    ./Reco <filenumber> <filename>
+    #./Reco <filenumber> <filename>
+    ./Reco 0 ../eltest
 
 ### generation macros
-generate box/ele_0.root with GEANT4 simulation
 
-    source rungun.sh run_ele $(Process) box/ele
+    #source rungun.sh <run_macro> <filenumber> <filename>
+    source rungun.sh run_ele 0 box/ele
 
-generate with condor jobs
+This generates box/ele_0.root with GEANT4 simulation
+
+Run multiple jobs with with condor.
 
     condor_submit runel.co
+
+This will make box/ele_#.root, # from 0 to 9.
+Number of jobs can be changed by editing `runel.co`.
+Check status of jobs by
+    
+    condor_q
+    
+`Idle` - jobs not yet running, `Run` - jobs running, `Done` - completed jobs, `Hold` - jobs holded having some problem.
+Check `log/` if jobs have problem.
 
 ### Analysis
 This requires the ROOT file generated from `Reco`. Assuming the name of the file `<filename>_<filenumber>.root`, in build/analysis,
 
     ./<your_analysis_program> <filenumber> <filename>
 
-Merge files from condor jobs with name `box/ele_#.root`,# from 0 to 49.
+Merge files from condor jobs with name `box/ele_#.root`,# from 0 to 9.
 to eltestdrsim.root, eltestreco.root
 
     ./merge ../box/ele_%.root 50 ../eltest
@@ -71,7 +88,7 @@ for python contents can be inspected by accessing tree
     event.Print()
     
     event.GetEntry(0)
-    print(event.E_DRcorr,np.array(image_ecore_s).shape,np.array(fiber_ecor_s).shape))
+    print(event.E_DRcorr,np.array(image_ecor_s).shape,np.array(fiber_ecor_s).shape))
     
 images have 168 * 168 shape, but imaging algorithm is still in progress.
 
