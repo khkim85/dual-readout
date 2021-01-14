@@ -50,7 +50,8 @@ This requires the ROOT file generated from `DRsim`. Assuming the name of the fil
 This generates box/ele_0.root with GEANT4 simulation
 
 Run multiple jobs with with condor.
-
+    
+    mkdir log
     condor_submit runel.co
 
 This will make box/ele_#.root, # from 0 to 9.
