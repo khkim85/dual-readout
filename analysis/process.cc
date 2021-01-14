@@ -109,6 +109,8 @@ TFile outfile(outname.Data(), "recreate");
     float Pleak =0;
     float phicut[46] = {-0.499591, -0.47728, -0.455022, -0.432663, -0.410903, -0.388499, -0.366236, -0.34418, -0.321856, -0.299631, -0.2775, -0.25534, -0.233038, -0.210916, -0.188759, -0.166583, -0.144445, -0.122228, -0.098836, -0.077592, -0.055648, -0.033304, -0.011214, 0.011112, 0.033254, 0.055531, 0.07785, 0.099895, 0.122083, 0.144345, 0.166667, 0.188781, 0.211015, 0.233232, 0.255433, 0.277524, 0.299768, 0.322163, 0.344244, 0.366127, 0.388528, 0.410884, 0.433001, 0.455096, 0.477211, 0.499555};
     float etacut[47] = {-0.509844, -0.487655, -0.465542, -0.443474, -0.421363, -0.399169, -0.376835, -0.35499, -0.332782, -0.310622, -0.288396, -0.266306, -0.244095, -0.221847, -0.198638, -0.17761, -0.155555, -0.133243, -0.110986, -0.088896, -0.066692, -0.044368, -0.022242, 1.8e-05, 0.022211, 0.04439, 0.066663, 0.088883, 0.111086, 0.133137, 0.155502, 0.17757, 0.199889, 0.222027, 0.244179, 0.266126, 0.288726, 0.310622, 0.332651, 0.354897, 0.377076, 0.399316, 0.421363, 0.443408, 0.465533, 0.48769, 0.509791};
+    Float_t center_eta=0.;
+    Float_t center_phi=0.;
     int num_phicut=46;
     int num_etacut=47;
     std::vector<Float_t> tower_e_s;
@@ -144,12 +146,6 @@ TFile outfile(outname.Data(), "recreate");
     std::vector<Int_t> ptc_pid;
 
     Int_t num_tower=0;
-    float fib_e_s=0.;
-    float fib_e_c=0.;
-    float fib_ecor_s=0.;
-    float fib_ecor_c=0.;
-    int fib_n_s=0.;
-    int fib_n_c=0.;
     TTree eventtree("event","event info");
     //eventtree.SetAutoSave(0);
     eventtree.Branch("tower_eta","vector<Float_t>",&tower_eta);
@@ -163,6 +159,8 @@ TFile outfile(outname.Data(), "recreate");
     eventtree.Branch("ptd",&ptd,"ptd/F");
     eventtree.Branch("major_axis",&major_axis,"major_axis/F");
     eventtree.Branch("minor_axis",&minor_axis,"minor_axis/F");
+    eventtree.Branch("center_eta",&center_eta,"center_eta/F");
+    eventtree.Branch("center_phi",&center_phi,"center_phi/F");
     eventtree.Branch("deleta2",&deleta2,"deleta2/F");
     eventtree.Branch("delphi2",&delphi2,"delphi2/F");
     eventtree.Branch("width_Gen",&width_Gen,"width_Gen/F");
@@ -277,8 +275,8 @@ TFile outfile(outname.Data(), "recreate");
     float ttheta=0.;
     float tphi=0.;
     Float_t w2=0.;
-    Float_t etac=0.;
-    Float_t phic=0.;
+    center_eta=0.;
+    center_phi=0.;
     Float_t pt_square=0.;
     Float_t m00=0.;
     Float_t m01=0.;
@@ -369,6 +367,8 @@ TFile outfile(outname.Data(), "recreate");
       ptc_phi.clear();
       ptc_eta.clear();
       ptc_pid.clear();
+      tower_diff_eta.clear();
+      tower_diff_phi.clear();
       //FILL_ZERO(voxel_ecor_s_,729000);
       //FILL_ZEROI(voxel_n_s_,729000);
       FILL_ZERO(image_ecor_c_,28224);
@@ -393,8 +393,8 @@ TFile outfile(outname.Data(), "recreate");
       deleta2=0.;
       delphi2=0.;
       width_Gen=0.;
-      etac=0.;
-      phic=0.;
+      center_eta=0.;
+      center_phi=0.;
       TLorentzVector ptc_sum;
       
       for (auto genptc : drEvt.GenPtcs){
@@ -414,15 +414,15 @@ TFile outfile(outname.Data(), "recreate");
           else continue;
         }
         E_Gen+=genptc.E;
-        etac+=ptc_p->Eta()*ptc_p->Pt();
-        phic+=phi*ptc_p->Pt();
+        center_eta+=ptc_p->Eta()*ptc_p->Pt();
+        center_phi+=phi*ptc_p->Pt();
         pt_Gen+=ptc_p->Pt();
         ptc_sum=ptc_sum+*ptc_p;
       }
       //printf("mass %g\n",ptc_sum.M());
       mass_Gen=ptc_sum.M();
-      etac=etac/pt_Gen;
-      phic=phic/pt_Gen;
+      center_eta=center_eta/pt_Gen;
+      center_phi=center_phi/pt_Gen;
       for (auto genptc : drEvt.GenPtcs){
         ptc_p->SetPxPyPzE(genptc.px,genptc.py,genptc.pz,genptc.E);
         phi=float(ptc_p->Phi());
@@ -439,8 +439,8 @@ TFile outfile(outname.Data(), "recreate");
           }
           else continue;
         }
-        deleta2+=std::pow(ptc_p->Eta()-etac,2)*ptc_p->Pt();
-        delphi2+=std::pow(phi-phic,2)*ptc_p->Pt();
+        deleta2+=std::pow(ptc_p->Eta()-center_eta,2)*ptc_p->Pt();
+        delphi2+=std::pow(phi-center_phi,2)*ptc_p->Pt();
         ptc_theta.push_back(ptc_p->Theta());
         ptc_eta.push_back(ptc_p->Eta());
         ptc_phi.push_back(phi);
@@ -620,7 +620,7 @@ TFile outfile(outname.Data(), "recreate");
                 if(etamax>eta && etamin<=eta){
                 
                 for(buf_index=0;buf_index<num_phicut-1;buf_index++){
-                  if(28>int(segmentation->x(fiber.fiberNum))){
+                  if(28>int(segmentation->y(fiber.fiberNum))){
                     if(phi<(phicut[buf_index]+phicut[buf_index+1])/2.){
                       phiindex=Int_t(buf_index*2);
                     }
@@ -669,8 +669,12 @@ TFile outfile(outname.Data(), "recreate");
                 //if( segmentation->numPhi(fiber.fiberNum)==0 && segmentation->numEta(fiber.fiberNum)==0){
                 if(diff_eta<=2 && diff_eta>=0 && diff_phi<=2 && diff_phi>=0){
                 //if( abs(ttheta - 0.01111)<0.0001 && abs(tphi - 0.0)<0.0001){
-                phiindex = Int_t(segmentation->x(fiber.fiberNum));
-                etaindex = Int_t(segmentation->y(fiber.fiberNum));
+                  phiindex = Int_t(segmentation->x(fiber.fiberNum));
+                  etaindex = Int_t(segmentation->y(fiber.fiberNum));
+                  if(diff_eta>1){
+                    phiindex = Int_t(55-segmentation->x(fiber.fiberNum));
+                    etaindex = Int_t(55-segmentation->y(fiber.fiberNum));
+                  }
                 //phiindex = Int_t(55-segmentation->x(fiber.fiberNum));
                 //etaindex = Int_t(55-segmentation->y(fiber.fiberNum));
                 //phiindex=Int_t(1.*(phi-phimin)/phisize);
