@@ -1,0 +1,15 @@
+Universe = vanilla
+getenv = True
+Executable = rungun.sh
+should_transfer_files=yes
+transfer_input_files = build
+when_to_transfer_output= ON_EXIT
+request_memory = 15GB
+request_cpus = 1
+transfer_output_files = box
+Requirements = ( machine == "kcms10.sscc.uos" && machine!="kcms17.sscc.uos" )
+output = log/ele$(Process).out
+error = log/ele$(Process).error
+Log = log/ele$(Process).log
+Arguments = run_ele $(Process) box/ele
+Queue 30
