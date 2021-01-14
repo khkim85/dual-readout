@@ -7,7 +7,7 @@ when_to_transfer_output= ON_EXIT
 request_memory = 15GB
 request_cpus = 1
 transfer_output_files = box
-Requirements = ( machine == "kcms10.sscc.uos" )
+Requirements = ( machine == "kcms10.sscc.uos"  || OpSys=="LINUX" )
 output = log/ele$(Process).out
 error = log/ele$(Process).error
 Log = log/ele$(Process).log
