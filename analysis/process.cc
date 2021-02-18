@@ -41,7 +41,8 @@ int isjet = atoi(argv[3]);
 
 
   
-  new GeoSvc({"./bin/compact/DRcalo.xml"});
+  new GeoSvc({"./DRsim/bin/compact/DRcalo.xml"});
+  //new GeoSvc({"./bin/compact/DRcalo.xml"});
 
   auto m_geoSvc = GeoSvc::GetInstance();
   std::string m_readoutName = "DRcaloSiPMreadout";
