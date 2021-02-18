@@ -68,14 +68,9 @@ This requires the ROOT file generated from `Reco`. Assuming the name of the file
 
     ./<your_analysis_program> <filenumber> <filename>
 
-Merge files from condor jobs with name `box/ele_#.root`,# from 0 to 9.
-to eltestdrsim.root, eltestreco.root
+Process image with files from condor jobs with name `box/ele_#.root`(# from 0 to 9) to `eltest.root`
 
-    ./merge ../box/ele_%.root 10 ../eltest
-
-Process image with `eltestdrsim.root` and `eltestreco.root` to `eltest.root`
-
-    ./process ../eltest ../eltest.root 0
+    ./process ../box/ele_%.root 10 ../eltest
 
 eltest.root have "event" tree contains processed data by each event.
 
