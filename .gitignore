@@ -55,3 +55,7 @@ CTestTestfile.cmake
 CPackSourceConfig.cmake
 CPackConfig.cmake
 cmake_install.cmake
+
+cpexe.sh
+process
+analysis

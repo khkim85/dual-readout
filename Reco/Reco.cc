@@ -66,5 +66,4 @@ int main(int , char* argv[]) {
   recoInterface->close();
 
   return 0;
->>>>>>> yjlee/master
 }
